@@ -1,0 +1,51 @@
+#!/bin/sh
+
+indent() {
+    sed 's/^/       /'
+}
+
+arrow() {
+    sed 's/^/-----> /'
+}
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+ENV_DIR=$3
+WORKING_DIR=$(pwd)
+
+TELEGRAF_VERSION=1.0.0
+TELEGRAF_FILENAME=telegraf-${TELEGRAF_VERSION}_linux_amd64.tar.gz
+TELEGRAF_URL=https://dl.influxdata.com/telegraf/releases/${TELEGRAF_FILENAME}
+
+echo "Installing Telegraf ${TELEGRAF_VERSION}" | arrow
+
+if [ ! -d $CACHE_DIR ]; then
+    mkdir -p $CACHE_DIR
+fi
+
+if [ ! -f $CACHE_DIR/$TELEGRAF_FILENAME ]; then
+    echo "Downloading telegraf from ${TELEGRAF_URL}" | indent
+    curl -sLf -o $CACHE_DIR/$TELEGRAF_FILENAME $TELEGRAF_URL
+fi
+
+echo "Extracting ${TELEGRAF_FILENAME}" | indent
+tar -C $CACHE_DIR -zxf $CACHE_DIR/$TELEGRAF_FILENAME
+
+# Copy the telegraf binary to the build dir
+cp $CACHE_DIR/telegraf/usr/bin/telegraf $BUILD_DIR/telegraf
+
+if [ ! -d $BUILD_DIR/.profile.d ]; then
+    mkdir -p "$BUILD_DIR/.profile.d"
+fi
+
+cat > $BUILD_DIR/.profile.d/001-heroku-buildpack-telegraf.sh << EOF
+#!/bin/sh
+
+pidfile=telegraf.pid
+start-stop-daemon --start --quiet --pidfile $pidfile --exec ./telegraf -- -pidfile $pidfile -config $BUILD_DIR/telegraf.conf >>/dev/null &
+
+EOF
+
+chmod +x $BUILD_DIR/.profile.d/001-heroku-buildpack-telegraf.sh
+
+
