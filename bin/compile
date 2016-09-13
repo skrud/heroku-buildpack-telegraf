@@ -42,7 +42,7 @@ cat > $BUILD_DIR/.profile.d/001-heroku-buildpack-telegraf.sh << EOF
 #!/bin/sh
 
 pidfile=telegraf.pid
-/sbin/start-stop-daemon --start --quiet --pidfile $pidfile --exec ./telegraf -- -pidfile $pidfile -config $BUILD_DIR/telegraf.conf >>/dev/null &
+/sbin/start-stop-daemon --start --quiet --pidfile \$pidfile --exec ./telegraf -- -pidfile \$pidfile -config $BUILD_DIR/telegraf.conf >>/dev/null &
 
 EOF
 
