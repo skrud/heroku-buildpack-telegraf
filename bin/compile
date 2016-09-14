@@ -32,7 +32,8 @@ echo "Extracting ${TELEGRAF_FILENAME}" | indent
 tar -C $CACHE_DIR -zxf $CACHE_DIR/$TELEGRAF_FILENAME
 
 # Copy the telegraf binary to the build dir
-cp $CACHE_DIR/telegraf/usr/bin/telegraf $BUILD_DIR/telegraf
+mkdir -p $BUILD_DIR/bin
+cp $CACHE_DIR/telegraf/usr/bin/telegraf $BUILD_DIR/bin/telegraf
 
 if [ ! -d $BUILD_DIR/.profile.d ]; then
     mkdir -p "$BUILD_DIR/.profile.d"
@@ -42,7 +43,7 @@ cat > $BUILD_DIR/.profile.d/001-heroku-buildpack-telegraf.sh << EOF
 #!/bin/sh
 
 pidfile=telegraf.pid
-/sbin/start-stop-daemon --start --quiet --pidfile \$pidfile --exec ./telegraf -- -pidfile \$pidfile -config $BUILD_DIR/telegraf.conf >>/dev/null &
+/sbin/start-stop-daemon --start --quiet --pidfile \$pidfile --exec telegraf -- -pidfile \$pidfile -config $BUILD_DIR/telegraf.conf >>/dev/null &
 
 EOF
 
