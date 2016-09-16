@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ -f $1/telegraf.conf ]; then
-    echo "Found telegraf.conf file"
+    echo "Found telegraf.conf"
     exit 0
 else
     exit 1
