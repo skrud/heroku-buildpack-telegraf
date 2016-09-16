@@ -37,8 +37,11 @@ cp $CACHE_DIR/telegraf/usr/bin/telegraf $BUILD_DIR/bin/telegraf
 
 influxdb_ssl_ca_cert="INFLUXDB_SSL_CA_CERT"
 if [ -f $ENV_DIR/$influxdb_ssl_ca_cert ]; then
+    echo "Found certificate for InfluxDB SSL CA" | indent
     mkdir -p $BUILD_DIR/etc
     cp $ENV_DIR/$influxdb_ssl_ca_cert $BUILD_DIR/etc/influxdb_ssl_ca_cert.pem
+else
+    echo "No certificate found"
 fi
 
 if [ ! -d $BUILD_DIR/.profile.d ]; then
