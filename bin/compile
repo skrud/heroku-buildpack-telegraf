@@ -13,7 +13,7 @@ CACHE_DIR=$2
 ENV_DIR=$3
 WORKING_DIR=$(pwd)
 
-TELEGRAF_VERSION=1.0.0
+TELEGRAF_VERSION=1.0.1
 TELEGRAF_FILENAME=telegraf-${TELEGRAF_VERSION}_linux_amd64.tar.gz
 TELEGRAF_URL=https://dl.influxdata.com/telegraf/releases/${TELEGRAF_FILENAME}
 
