@@ -1,7 +1,10 @@
 #!/bin/sh
 
-if [ -f $1/telegraf.conf ]; then
-    echo "Found telegraf.conf"
+if [ $TELEGRAF_CONF ]; then TELEGRAF_CONF=$1/$TELEGRAF_CONF; fi
+TELEGRAF_CONF=${TELEGRAF_CONF-$1/telegraf.conf}
+
+if [ -f $TELEGRAF_CONF ]; then
+    echo "Found telegraf.conf ($TELEGRAF_CONF)"
     exit 0
 else
     exit 1
