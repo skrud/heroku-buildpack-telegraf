@@ -20,7 +20,7 @@ done
 
 if [ $TELEGRAF_CONF ]; then TELEGRAF_CONF=$HOME/$TELEGRAF_CONF; fi
 TELEGRAF_CONF=${TELEGRAF_CONF-$HOME/telegraf.conf}
-TELEGRAF_VERSION=1.1.0
+TELEGRAF_VERSION=1.2.1
 TELEGRAF_FILENAME=telegraf-${TELEGRAF_VERSION}_linux_amd64.tar.gz
 TELEGRAF_URL=https://dl.influxdata.com/telegraf/releases/${TELEGRAF_FILENAME}
 
