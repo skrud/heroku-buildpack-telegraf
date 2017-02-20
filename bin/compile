@@ -13,6 +13,13 @@ CACHE_DIR=$2
 ENV_DIR=$3
 WORKING_DIR=$(pwd)
 
+# Export user env variable to use in the file
+for KEY in TELEGRAF_CONF; do
+  [ -f $ENV_DIR/$KEY ] && export "$KEY=$(cat $ENV_DIR/$KEY)"
+done
+
+if [ $TELEGRAF_CONF ]; then TELEGRAF_CONF=$HOME/$TELEGRAF_CONF; fi
+TELEGRAF_CONF=${TELEGRAF_CONF-$HOME/telegraf.conf}
 TELEGRAF_VERSION=1.2.1
 TELEGRAF_FILENAME=telegraf-${TELEGRAF_VERSION}_linux_amd64.tar.gz
 TELEGRAF_URL=https://dl.influxdata.com/telegraf/releases/${TELEGRAF_FILENAME}
@@ -53,8 +60,8 @@ cat > $BUILD_DIR/.profile.d/001-heroku-buildpack-telegraf.sh << EOF
 
 pidfile=/tmp/telegraf.pid
 
-# Start Telegraf from the \$HOME/bin directory with the configuration in /app/telegraf.conf, redirect STDIN to /dev/null (but STDERR should still come through the logs)
-/sbin/start-stop-daemon --start --quiet --pidfile \$pidfile --exec $HOME/bin/telegraf -- -pidfile \$pidfile -config $HOME/telegraf.conf -quiet >/dev/null &
+# Start Telegraf from the \$HOME/bin directory with the configuration in /app/telegraf.conf (by default), redirect STDIN to /dev/null (but STDERR should still come through the logs)
+/sbin/start-stop-daemon --start --quiet --pidfile \$pidfile --exec $HOME/bin/telegraf -- -pidfile \$pidfile -config $TELEGRAF_CONF -quiet >/dev/null &
 
 EOF
 
